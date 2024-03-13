@@ -5,6 +5,9 @@ import bodyParser from 'body-parser';
 import cors from "cors";
 import sequelize from './db'
 import bookingRoutes from "./routes/bookings.routes";
+import authRoutes from './routes/auth.routes';
+import cookieParser from "cookie-parser";
+import { errorHandler } from "./middleware/errorMiddleware";
 
 dotenv.config();
 
@@ -23,6 +26,8 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(cookieParser());
+
 app.get('/', async (req: Request, res: Response) => {
   res.status(200).json({
     message: 'Booking app APIs are running'
@@ -31,23 +36,10 @@ app.get('/', async (req: Request, res: Response) => {
 
 // routes
 app.use("/api/bookings", bookingRoutes);
+app.use("/api/auth", authRoutes);
 
-/* // connect to the "src/routers" directory
-const routersPath = path.join(__dirname, "routes");
-console.log(routersPath);
-// read all files in the "/src/routers" directory
-fs.readdirSync(routersPath).forEach((file: string) => {
-  if (file.endsWith(".ts")) {
-    // dynamically import the router module
-    const routerModule = require(path.join(routersPath, file));
+app.use(errorHandler);
 
-    // get the "router" object exported by the router module
-    const router = routerModule.router;
-
-    // register the router
-    app.use(router);
-  }
-}); */
 
 const server = http.createServer(app);
 server.listen(port, () => {

@@ -2,11 +2,11 @@ import { Table, Column, DataType,Model} from 'sequelize-typescript';
 
 @Table({
    timestamps: true ,
-   tableName: "bookings",
-   modelName: "Booking"
+   tableName: "users",
+   modelName: "User"
 })
 
-export class Booking extends Model {
+export class User extends Model {
 
   @Column({
     type: DataType.UUID,
@@ -14,17 +14,23 @@ export class Booking extends Model {
     primaryKey: true
   })
 
-  declare id: any;
+  declare user_id: any;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-   title!: string;
+   name!: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  description!: string;
+  email!: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  password!: string;
 }

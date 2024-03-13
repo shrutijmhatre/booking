@@ -5,6 +5,8 @@ import {
   updateBooking,
   deleteBooking
 } from '../controllers/bookingController';
+import {validationResult} from 'express-validator'
+ import { bookingInputValidation } from '../middleware/validation';
 
 // Create an Express router
 const bookingRoutes = express.Router();
@@ -13,31 +15,31 @@ const bookingRoutes = express.Router();
 
 /**
  * Get all bookings
- * @route GET /bookings
+ * @route GET /api/bookings
  */
 bookingRoutes.get('/', getBookings);
 
 /**
  * Get all booking by is
- * @route GET /bookings/:id
+ * @route GET /api/bookings/:id
  */
 bookingRoutes.get('/:id', getBookings);
 
 /**
  * Create a new booking
- * @route POST /bookings
+ * @route POST /api/bookings
  */
 bookingRoutes.post('/', createBooking);
 
 /**
  * Update a booking by ID
- * @route PUT /bookings/:id
+ * @route PUT /api/bookings/:id
  */
 bookingRoutes.put('/:id', updateBooking);
 
 /**
  * Delete a bookings by ID
- * @route DELETE /bookings/:id
+ * @route DELETE /api/bookings/:id
  */
 bookingRoutes.delete('/:id', deleteBooking);
 
