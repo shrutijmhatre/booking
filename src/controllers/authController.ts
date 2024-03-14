@@ -40,7 +40,7 @@ const authenticateUser = asyncHandler(async (req: Request, res: Response) => {
 
   if (user &&  (compareSync(password, user.password))) {
  generateToken(res, user.email);
-    res.status(201).json({
+    res.status(200).json({
       id: user.user_id,
       name: user.name,
       email: user.email,
