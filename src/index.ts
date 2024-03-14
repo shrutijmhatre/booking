@@ -8,6 +8,7 @@ import bookingRoutes from "./routes/bookings.routes";
 import authRoutes from './routes/auth.routes';
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./middleware/errorMiddleware";
+import { authenticate } from "./middleware/authMiddleware";
 
 dotenv.config();
 
@@ -28,14 +29,23 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cookieParser());
 
-app.get('/', async (req: Request, res: Response) => {
-  res.status(200).json({
-    message: 'Booking app APIs are running'
-  });
+app.get("/", (req, res) => {
+  try {
+      res.status(200).json({
+          status: "success",
+          data: [],
+          message: "Welcome to our Booking API homepage!",
+      });
+  } catch (err) {
+      res.status(500).json({
+          status: "error",
+          message: "Internal Server Error",
+      });
+  }
 });
 
 // routes
-app.use("/api/bookings", bookingRoutes);
+app.use("/api/bookings",authenticate, bookingRoutes);
 app.use("/api/auth", authRoutes);
 
 app.use(errorHandler);

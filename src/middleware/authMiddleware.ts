@@ -1,37 +1,28 @@
 import { Request, Response, NextFunction } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import {User} from "../models/User";
-import asyncHandler from "express-async-handler";
-import { AuthenticationError } from "./errorMiddleware";
+import jwt from "jsonwebtoken";
+import * as dotenv from "dotenv";
 
-const authenticate = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      let token = req.cookies.jwt;
+dotenv.config();
 
-      if (!token) {
-        throw new AuthenticationError("Token not found");
-      }
-
-      const jwtSecret = process.env.JWT_SECRET || "";
-      const decoded = jwt.verify(token, jwtSecret) as JwtPayload;
-
-      if (!decoded || !decoded.userId) {
-        throw new AuthenticationError("UserId not found");
-      }
-
-      const user = await User.findByPk(decoded.userId);
-
-      if (!user) {
-        throw new AuthenticationError("User not found");
-      }
-
-
-      next();
-    } catch (e) {
-      throw new AuthenticationError("Invalid token");
+const authenticate = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const header = req.headers.authorization;
+    if (!header) {
+      return res.status(401).json({ message: "Unauthorized" });
     }
-  }
-);
+    const token = header.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const decode = jwt.verify(token, process.env.JWT_SECRET || "");
+    if (!decode) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    
+    next();
+  };
 
 export { authenticate };
