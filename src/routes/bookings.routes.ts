@@ -5,8 +5,6 @@ import {
   updateBooking,
   deleteBooking
 } from '../controllers/bookingController';
-import {validationResult} from 'express-validator'
- import { bookingInputValidation } from '../middleware/validation';
 
 // Create an Express router
 const bookingRoutes = express.Router();
