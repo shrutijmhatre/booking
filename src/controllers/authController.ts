@@ -6,29 +6,33 @@ import {
   AuthenticationError,
 } from "../middleware/errorMiddleware";
 import asyncHandler from "express-async-handler";
-import { hashSync, compareSync} from 'bcrypt'
+import {genSaltSync, hashSync, compareSync} from 'bcrypt'
+import { userDTO } from "../types/dto";
 
 const registerUser = asyncHandler(async (req: Request, res: Response) => {
-  const { name, email, password } = req.body;
-  const userExists = await User.findOne({ where: { email: email } });
+  const { name, email, password, isAdmin } = req.body;
+  const userExists =  User.length !==0 && User.findOne({ where: { email: email } });
 
   if (userExists) {
-    res.status(409).json({ message: "The email already exists" });
+    res.status(409).json({ message: "The user already exists" });
   }
-
+  
   const user = await User.create({
     name,
     email,
-    password: hashSync(password, 8),
+    password: hashSync(password, genSaltSync(10)),
+    isAdmin
   });
 
   if (user) {
-    generateToken(res, user.email);
-    res.status(201).json({
-      id: user.id,
+    let payload: userDTO = { 
+      userId: user.userId,
       name: user.name,
       email: user.email,
-    });
+      isAdmin: user.isAdmin
+    }; 
+    generateToken(res, payload);
+    res.status(201).json(payload);
   } else {
     throw new BadRequestError("An error occurred in registering the user");
   }
@@ -39,12 +43,14 @@ const authenticateUser = asyncHandler(async (req: Request, res: Response) => {
   const user = await User.findOne({ where: { email: email } });
 
   if (user &&  (compareSync(password, user.password))) {
- generateToken(res, user.email);
-    res.status(200).json({
-      id: user.user_id,
+    let payload: userDTO = { 
+      userId: user.userId,
       name: user.name,
       email: user.email,
-    });
+      isAdmin: user.isAdmin
+    }; 
+    generateToken(res, payload);
+    res.status(200).json(payload);
   } else {
     throw new AuthenticationError("User not found");
   }

@@ -6,9 +6,9 @@ import cors from "cors";
 import sequelize from './db'
 import bookingRoutes from "./routes/bookings.routes";
 import authRoutes from './routes/auth.routes';
+import userRoutes from './routes/user.routes';
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./middleware/errorMiddleware";
-import { authenticate } from "./middleware/authMiddleware";
 
 dotenv.config();
 
@@ -45,8 +45,9 @@ app.get("/", (req, res) => {
 });
 
 // routes
-app.use("/api/bookings",authenticate, bookingRoutes);
+app.use("/api/bookings", bookingRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 
 app.use(errorHandler);
 

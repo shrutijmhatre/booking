@@ -5,7 +5,7 @@ import {
   logoutUser
 } from "../controllers/authController";
 import { validateData } from '../middleware/validationMiddleware';
- import { userRegistrationSchema, userLoginSchema} from '../schemas/user.schema'
+import { userRegistrationSchema, userLoginSchema} from '../schemas/user.schema'
 
 const authRoutes = express.Router();
 

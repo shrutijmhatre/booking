@@ -14,7 +14,7 @@ export class User extends Model {
     primaryKey: true
   })
 
-  declare user_id: any;
+  declare userId: any;
 
   @Column({
     type: DataType.STRING,
@@ -33,4 +33,10 @@ export class User extends Model {
     allowNull: false,
   })
   password!: string;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: false,
+  })
+  isAdmin!: boolean;
 }
